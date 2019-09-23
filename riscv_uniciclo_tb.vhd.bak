@@ -1,0 +1,97 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity riscv_uniciclo_tb is
+end riscv_uniciclo_tb;
+
+architecture test of riscv_uniciclo_tb if
+	
+	signal signalout_clock_rapido: std_logic;
+	signal signalout_clock_lento: std_logic;
+	signal signalout_reset: std_logic;
+	signal signalout_pc: std_logic_vector(31 downto 0);
+	signal signalout_instrucao: std_logic_vector(31 downto 0);
+	signal signalout_ro1: std_logic_vector(31 downto 0);
+	signal signalout_ro2: std_logic_vector(31 downto 0);
+	signal signalout_rs1: std_logic_vector(4 downto 0);
+	signal signalout_rs2: std_logic_vector(4 downto 0);
+	signal signalout_rd: std_logic_vector(4 downto 0);
+	signal signalout_control_branch: std_logic;
+	signal signalout_control_memread: std_logic;
+	signal signalout_control_memtoreg: std_logic;
+	signal signalout_control_aluop: std_logic_vector(1 downto 0);
+	signal signalout_control_memwrite: std_logic;
+	signal signalout_control_alusrc: std_logic;
+	signal signalout_control_regwrite: std_logic;
+	signal signalout_saida_ula: std_logic_vector(31 downto 0);
+	signal signalout_saida_imm_gerador: std_logic_vector(31 downto 0);
+	signal signalout_saida_mem_dado: std_logic_vector(31 downto 0);
+	
+	component riscv_uniciclo port(
+		signalout_clock_rapido: in std_logic;
+		signalout_clock_lento: in std_logic;
+		signalout_reset: in std_logic;
+		signalout_pc: out std_logic_vector(31 downto 0);
+		signalout_instrucao: out std_logic_vector(31 downto 0);
+		signalout_ro1: out std_logic_vector(31 downto 0);
+		signalout_ro2: out std_logic_vector(31 downto 0);
+		signalout_rs1: out std_logic_vector(4 downto 0);
+		signalout_rs2: out std_logic_vector(4 downto 0);
+		signalout_rd: out std_logic_vector(4 downto 0);
+		signalout_control_branch: out std_logic;
+		signalout_control_memread: out std_logic;
+		signalout_control_memtoreg: out std_logic;
+		signalout_control_aluop: out std_logic_vector(1 downto 0);
+		signalout_control_memwrite: out std_logic;
+		signalout_control_alusrc: out std_logic;
+		signalout_control_regwrite: out std_logic;
+		signalout_saida_ula: out std_logic_vector(31 downto 0);
+		signalout_saida_imm_gerador: out std_logic_vector(31 downto 0);
+		signalout_saida_mem_dado: out std_logic_vector(31 downto 0)
+	);
+	end component;
+	
+	begin
+	i1:riscv_uniciclo
+	
+		port map(
+			signalout_clock_rapido => signalout_clock_rapido,
+			signalout_clock_lento => signalout_clock_lento,
+			signalout_reset => signalout_reset,
+			signalout_pc => signalout_pc,
+			signalout_instrucao => signalout_instrucao,
+			signalout_ro1 => signalout_ro1,
+			signalout_ro2 => signalout_ro2,
+			signalout_rs1 => signalout_rs1,
+			signalout_rs2 => signalout_rs2,
+			signalout_rd => signalout_rd,
+			signalout_control_branch => signalout_control_branch,
+			signalout_control_memread => signalout_control_memread,
+			signalout_control_memtoreg => signalout_control_memtoreg,
+			signalout_control_aluop => signalout_control_aluop,
+			signalout_control_memwrite => signalout_control_memwrite,
+			signalout_control_alusrc => signalout_control_alusrc,
+			signalout_control_regwrite => signalout_control_regwrite,
+			signalout_saida_ula => signalout_saida_ula,
+			signalout_saida_imm_gerador => signalout_saida_imm_gerador,
+			signalout_saida_mem_dado => signalout_saida_mem_dado
+		);
+		
+		clock: process
+			begin
+				signalout_reset <= '1';
+				wait for 10 ps;
+				
+				for x in 1 to 1000 loop
+					signalout_clock_rapido <= '1';
+					signalout_clock_lento <= '0';
+					wait for 10 ps;
+					
+					signalout_clock_rapido <= '0';
+					signalout_clock_lento <= '1';
+					wait for 10 ps;
+				end  loop;
+				
+		end process clock;
+end architecture test;

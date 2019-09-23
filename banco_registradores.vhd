@@ -1,0 +1,38 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity banco_registradores is
+	generic (WSIZE : natural := 32);
+	port (
+		clock, wren, rst		: in	std_logic;
+		rs1, rs2, rd		: in	std_logic_vector(4 downto 0);
+		data					: in  std_logic_vector(WSIZE-1 downto 0);
+		r_out1, r_out2				: out std_logic_vector(WSIZE-1 downto 0)
+	);
+end banco_registradores;
+
+architecture behavior of banco_registradores is
+	type mat is array (31 downto 0) of std_logic_vector (31 downto 0);
+	signal registers: mat;
+begin	
+	r_out1 <= registers(to_integer(unsigned(rs1)));
+	r_out2 <= registers(to_integer(unsigned(rs2)));
+	
+	xregs_process: process (clock, rst) begin
+		if (rst = '1') then
+			for i in 0 to registers'length-1 loop
+				registers(i) <= X"00000000";
+			end loop;
+		elsif (rising_edge(clock)) then
+			if (wren = '1') then
+				registers(to_integer(unsigned(rd))) <= data;
+			end if;
+		end if;
+	
+	-- x0 sempre fica zero: "hardwired to ground".
+	registers(0) <= X"00000000";
+	
+	end process xregs_process;
+
+end architecture behavior;
